@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Volunteer Availability</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css"
+          integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Copse&display=swap" rel="stylesheet">
+
+    {% load static %}
+    <link href="{% static 'css/sinfo.css' %}" rel="stylesheet"/>
+    <link rel="shortcut icon" type="image/png" href="{% static 'images/favicon.ico' %}">
+</head>
+<body onload="Reset_form();">
+<script>
+	function Reset_form(){
+	document.getElementById("tempform").reset();
+	if ({{ refresh }} == 1){
+	alert("Preference Saved");
+	}
+	}
+
+</script>
+<style>
+.btn-primary, .btn-info {
+	background-color: #ff6347!important;
+	}
+	
+	</style>
+<main class="pref">
+    <form method="POST" id="tempform" action="/vpost_signup/">
+        {% csrf_token %}
+        <section>
+            <div class="avail">
+                <div class="avail-overlay">
+                    <div class="container">
+                        <div><h1>Availability</h1></div>
+                        <br>
+                        <h3><label for="appt">Add your preferences:</label></h3>
+                        <div class="row"><label>Day :</label>
+                            <div class="col-sm-1"></div>
+                            <div id="appt"
+                                 style="position:relative;width:200px;height:25px;border:0;padding:0;margin:0;"><br>
+                                <select name="dayValue" style="position:absolute;top:0px;left:0px;width:200px; height:25px;line-height:20px;margin:0;padding:0;" required>
+
+                                    <option selected disabled value="">Select Day</option>
+                                    <option type="submit" name="sun">Sunday</option>
+									<option type="submit" name="mon">Monday</option>
+                                    <option type="submit" name="tue">Tuesday</option>
+                                    <option type="submit" name="wed">Wednesday</option>
+                                    <option type="submit" name="thurs">Thursday</option>
+                                    <option type="submit" name="fri">Friday</option>
+                                    <option type="submit" name="sat">Saturday</option>
+                                </select>
+
+
+                            </div>
+                            <br><br>
+                        </div>
+                        <div class="row">
+                            <label>from :
+                                <input type="time" id="from" name="fromtime"
+                                       min="09:00" max="20:00" required>
+                                <input name="fromValue" id="fromValue" type="hidden">
+                            </label>
+                            <label>to :
+                                <input type="time" id="to" name="totime"
+                                       min="09:00" max="20:00" required>
+                                <input name="toValue" id="toValue" type="hidden">
+                            </label>
+                            <small class="text-muted">Students are available between 9am to 8pm.</small>
+                            <br>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <button type="submit" class="btn btn-info col-lg-8" id="add">Save and Add New Preference</button>
+        <br><br>
+        <a href="/vdashboard/" class="btn btn-info" role="button">Click here after saving your Preferences</a>
+
+    </form>
+</main>
+</body>
+</html>

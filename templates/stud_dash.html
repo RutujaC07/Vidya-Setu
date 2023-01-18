@@ -1,0 +1,237 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Dashboard</title>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
+    {% load static %}
+    <link href="{% static 'css/vol_dash.css' %}" rel="stylesheet"/>
+    <link rel="shortcut icon" type="image/png" href="{% static 'images/favicon.ico' %}">
+
+</head>
+<body onload="func();">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+<script >
+function func(){
+document.location.hash = "";
+		document.getElementById("gif").style.display = "block";
+
+}
+
+
+	function stud_dash_data()
+	{
+			document.getElementById("gif").style.display = "none";
+
+		$.ajax(
+		{
+			type:"GET",
+			url: "/stud_dash_data/",
+			data:{
+			},
+			success: function( stud_dash_data )
+			{	
+				console.log(stud_dash_data);
+				if (stud_dash_data.length == 0){
+				console.log("here 2");
+				document.getElementById("dashboard").innerHTML  = "<h2>You're not matched with any volunteer, add more availability preferences.</h2>"
+				}
+				else {
+				row = "<h2 class='header text-center'><span class='icon'></span>Welcome " + stud_dash_data[0][5] + "! Connect with the volunteers to start a chat. <br>Keep Learning! </h2><div class='row'>";
+				for(i=0;i<stud_dash_data.length;i++){
+					console.log(stud_dash_data[i][0]);
+					row += "<div class='col-md-4'><div class='col-md-12' style='background:#ffcccb; margin: 10px 0 10px 0'><h style='color:#FF0000;'>Volunteer: </h><h>" +  stud_dash_data[i][0] + "</h><br><h  style='color:#FF0000;'>Subject: </h><h>" + stud_dash_data[i][1] + "</h><br><h  style='color:#FF0000;'>Day: </h><h>" + stud_dash_data[i][2] + "</h><br><h  style='color:#FF0000;'>From: </h><h>" + stud_dash_data[i][3] + "</h><br><h style='color:#FF0000;'>To: </h><h>" + stud_dash_data[i][4] + "</h><br><a href = '/stud_chat/"+stud_dash_data[i][0]+"@"+stud_dash_data[i][1]+"@"+stud_dash_data[i][2]+"@"+stud_dash_data[i][3]+"@"+stud_dash_data[i][4]+"'><input type='button' style='margin-bottom:5px;' value='Connect Volunteer'></a>";
+					row += "</div></div>";
+				}
+				row += "</div>";
+				document.getElementById("dashboard").innerHTML = row; 
+				}
+			}
+			
+			
+		 });
+	};
+	function get_connected_vols()
+	{
+			document.getElementById("gif").style.display = "none";
+
+		$.ajax(
+		{
+			type:"GET",
+			url: "/get_connected_vols/",
+			data:{
+			},
+			success: function( get_connected_vols )
+			{	
+				if (get_connected_vols.length == 0){
+				console.log("here 2");
+				document.getElementById("connected").innerHTML  = "<h2>You're not connected with any volunteer.</h2>"
+				}
+				else {				
+				var chatbox = document.getElementById("connected");
+				chatbox.innerHTML = "";
+				var row = "<h2 class='header'>Volunteer Connected Status</h2><table style='width:100%;margin-left:25px;border:1 px solid black;'><tr><th style='color:rgb(234,83,63);border: 1px solid black;';>Volunteer</th><th  style='color:rgb(234,83,63);border: 1px solid black;'>Subject</th><th  style='color:rgb(234,83,63);border: 1px solid black;'>Day</th><th  style='color:rgb(234,83,63);border: 1px solid black;'>From</th><th  style='color:rgb(234,83,63);border: 1px solid black;'>To</th><th  style='color:rgb(234,83,63);border: 1px solid black;'>Status</th></tr>";
+
+					for (key=0;key<get_connected_vols.length;key++) 
+					{		var status = "Connected";
+							if (get_connected_vols[key][6] == "confirmed"){
+							status = "Awaiting Acceptance";
+							}
+							row += "<tr><th style='border:1px solid black;'>" + get_connected_vols[key][0] + "</th><th style='border:1px solid black;'>" + get_connected_vols[key][2] + "</th><th style='border:1px solid black;'>" + get_connected_vols[key][3] + "</th><th style='border:1px solid black;'>" + get_connected_vols[key][4] + "</th><th style='border:1px solid black;'>" + get_connected_vols[key][5] + "</th><th style='border:1px solid black;'>" + status + "</th></tr>"; 
+						
+					}  
+				row += "</table>"
+				chatbox.innerHTML = row;
+			
+			}
+			}
+			
+		 });
+	};
+	function stud_get_messages()
+	{		document.getElementById("gif").style.display = "none";
+
+		$.ajax(
+		{
+			type:"GET",
+			url: "/stud_get_messages/",
+			data:{
+			},
+			success: function( received_messages_by_stud )
+			{	
+				if (received_messages_by_stud.length == 0){
+				console.log("here 2");
+				document.getElementById("msg").innerHTML  = "<h2>You have not received any messages.</h2>"
+				}
+				else {
+				var row = "<h2 class='header ' style=''>Received Messages</h2><div class='row'>";
+				for(i=0;i<received_messages_by_stud.length;i++){
+					console.log(received_messages_by_stud[i]);
+					row += "<div class='col-md-4'><div class='col-md-12' style='background:#ffcccb; margin: 10px 0 10px 0'><h>Volunteer: " +  received_messages_by_stud[i][0] + "</h><br><h>Subject: " + received_messages_by_stud[i][1] + "</h><br><h>Day: " + received_messages_by_stud[i][2] + "</h><br><h>From: " + received_messages_by_stud[i][3] + "</h><br><h>To: " + received_messages_by_stud[i][4] + "</h><br><h>Message: " + received_messages_by_stud[i][5] + "</h><br><a href = '/stud_chat/"+received_messages_by_stud[i][0]+"@"+received_messages_by_stud[i][1]+"@"+received_messages_by_stud[i][2]+"@"+received_messages_by_stud[i][3]+"@"+received_messages_by_stud[i][4]+"'><input type='button'  style='margin-bottom:5px;'  value='Connect Volunteer'></a>";
+					row += "</div></div>";
+				}
+				row += "</div>";
+				document.getElementById("msg").innerHTML = row;
+			}
+			}
+			
+		 });
+	};	
+	function get_study_material()
+	{		document.getElementById("gif").style.display = "none";
+
+		$.ajax(
+		{
+			type:"GET",
+			url: "/get_study_material/",
+			data:{
+			},
+			success: function( study_material )
+			{	
+			if (study_material == null){
+				console.log("here 2");
+				document.getElementById("study").innerHTML  = "<h2>No study materials uploaded yet.</h2>"
+				}
+				else {
+			console.log(study_material);
+			var index = 0;
+			var row = "<h2 class='header text-center' style='text-decoration:underline;'>Study Material</h2>"
+					for (var key in study_material) 
+					{
+					
+					row += "<h2>Subject: " + key + "</h2><br>";
+					row += "<div class='row' style='margin-left: 25px;color:#007bff'>";
+					
+					
+					   for (var k in study_material[key]) 
+					   {
+							for(i=1;i<study_material[key][k].length;i++) 
+							{
+								console.log(study_material[key][k][i])
+								row += "<div class='col-md-4'><div class='col-md-12' style='background:#ffcccb; margin: 10px 0 10px 0;'><iframe width='200' height='120' src='" + study_material[key][k][i] + "' title='YouTube video player' frameborder='0' allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture' allowfullscreen></iframe></div></div>";
+						   }
+						   
+						
+						}
+						row += "</div>";
+				   }
+				  
+					document.getElementById("study").innerHTML = row;
+
+			}
+			}
+			
+		 });
+	 };
+</script>
+<style>
+.btn-primary, .btn-info {
+	background-color: #ff6347!important;
+	}
+</style>
+	<div class = "container">
+
+
+
+	<div class="admin-panel clearfix">
+      <div class="slidebar">
+        <div class="logo">
+            <img class="img-fluid text-center" src="/static/images/vlogo.png" style="margin-left:auto;
+    border-radius:50%;
+    max-width:70%;">
+          <a href="/home/"></a>
+        </div>
+        <ul>
+          <li><a href="#dashboard" id="targeted"><button onclick="stud_dash_data();" style="padding: 0px;margin-left: -15px;width:100%;background: transparent;color: rgb(140,140,140);border: 0px;">Matched Volunteers</button></a></li>
+          <li><a href="#msg"><button onclick="stud_get_messages();" style="padding: 0px;margin-left: -15px;width:100%;background: transparent;color: rgb(140,140,140);border: 0px;">Received Messages</button></a></li>
+          <li><a href="#connected"><button onclick="get_connected_vols();" style="padding: 0px;margin-left: -15px;width:100%;background: transparent;color: rgb(140,140,140);border: 0px;">Connected Volunteers</button></a></li>
+          <li><a href="#study"><button onclick="get_study_material();" style="padding: 0px;margin-left: -15px;width:100%;background: transparent;color: rgb(140,140,140);border: 0px;">Study Material</button></a></li>
+
+        </ul>
+      </div>
+      <div class="main">
+
+        <div class="mainContent clearfix" >
+          <div id="dashboard" style="width:90%;height: 80%; margin:100px 20px 0 20px; overflow:hidden;overflow-y:auto;">
+
+
+            <h2 class="header text-center"><span class="icon"></span>Welcome {{ name }}! Connect with the volunteers to start a chat. <br>Keep Learning! </h2>
+			<img id="" class="img text-center" src="/static/images/loading.gif" style="padding-left: 250px;width: 60%;padding-top: 100px;">
+          </div>
+           <div id="msg"style="width:90%;height: 80%; margin:100px 20px 0 20px; overflow:hidden;overflow-y:auto;">
+			<img id="" class="img text-center" src="/static/images/loading.gif" style="padding-left: 250px;width: 60%;padding-top: 100px;">
+           </div>
+           <div id="connected" style="width:90%; padding-top:100px;margin:0 20px 0 20px;overflow:hidden;overflow-x:auto;">
+			<img id="" class="img text-center" src="/static/images/loading.gif" style="padding-left: 250px;width: 60%;padding-top: 100px;">
+            
+           </div>
+            <div id="study" style="width:90%;height: 80%;margin:100px 20px 0 20px;overflow:hidden;overflow-y:auto;" >
+             
+							<img id="" class="img text-center" src="/static/images/loading.gif" style="padding-left: 250px;width: 60%;padding-top: 100px;">
+
+
+           </div>
+
+
+         </div>
+     <ul class="statusbar">
+		<li class="logout"><a href="/logout/" >Logout</a></li>
+		<li class="logout"><a href="/sinfo/" style="width:120%;">Add Availability</a></li>
+				<l1 ><h2 class="header text-center"><i style="color:#ff6347;">Welcome {{ name }}! </i></h2></li>
+
+     </ul>
+	 		<img id="gif" class="img" src="/static/images/main.gif" style="padding-left: 100px;width: 80%;padding-top: 60px;">
+
+   </div>
+</div>
+
+
+
+
+</div>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+</body>
+</html>
